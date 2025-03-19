@@ -232,7 +232,7 @@ figma.ui.onmessage = async msg => {
         
         // Remove the default "Mode 1" and add the modes we need
         collection.modes[0].name = 'vi';
-        const enModeId = collection.addMode('en', 'English');
+        collection.addMode('en', 'English');
         
         // Ensure only three modes exist
         collection.modes = collection.modes.slice(0, 2);
@@ -262,7 +262,7 @@ figma.ui.onmessage = async msg => {
         for (const variable of msg.variables) {
           try {
             const newVar = variablesAPI.createVariable(
-              variable.name,
+              variable.fullName || variable.name,
               collection.id,
               'STRING'
             );
@@ -276,7 +276,7 @@ figma.ui.onmessage = async msg => {
               id: newVar.id
             });
           } catch (varError) {
-            console.error(`Error creating variable ${variable.name}:`, varError);
+            console.error(`Error creating variable ${variable.name || variable.fullName}:`, varError);
           }
         }
       } else {
@@ -284,7 +284,7 @@ figma.ui.onmessage = async msg => {
         for (const variable of msg.variables) {
           try {
             const newVar = variablesAPI.createVariable(
-              variable.name,
+              variable.fullName || variable.name,
               collection.id,
               'STRING'
             );
@@ -295,10 +295,11 @@ figma.ui.onmessage = async msg => {
 
             console.log('Variable created successfully:', {
               name: newVar.name,
-              id: newVar.id
+              id: newVar.id,
+              screenName: variable.screenName
             });
           } catch (varError) {
-            console.error(`Error creating variable ${variable.name}:`, varError);
+            console.error(`Error creating variable ${variable.name || variable.fullName}:`, varError);
           }
         }
       }
